@@ -59,6 +59,28 @@
         .reply-form { display: flex; gap: 8px; margin-top: 10px; }
         .reply-form input { flex: 1; padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.9em; }
         .reply-submit { background: #2d6b4f; color: white; border: none; padding: 8px 14px; border-radius: 8px; font-size: 0.85em; cursor: pointer; }
+        /* Agenda suggestions */
+        .suggest-toggle { display: inline-block; margin-top: 10px; background: none; border: 1px dashed #aaa; color: #666; padding: 4px 12px; border-radius: 6px; font-size: 0.78em; cursor: pointer; transition: all 0.2s; }
+        .suggest-toggle:hover { border-color: #2d6b4f; color: #2d6b4f; }
+        .suggest-form { display: none; margin-top: 12px; background: #f9fdf9; border: 1px solid #e0e8e0; border-radius: 8px; padding: 12px; }
+        .suggest-form.open { display: block; }
+        .suggest-form input, .suggest-form textarea { width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.88em; font-family: inherit; margin-bottom: 8px; }
+        .suggest-form textarea { resize: vertical; height: 60px; }
+        .suggest-submit { background: #2d6b4f; color: white; border: none; padding: 7px 14px; border-radius: 6px; font-size: 0.82em; cursor: pointer; }
+        .suggestions-list { margin-top: 12px; }
+        .suggestion-item { background: white; border: 1px solid #e8e8e8; border-radius: 8px; padding: 10px 14px; margin-top: 8px; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+        .suggestion-content { flex: 1; }
+        .suggestion-text { color: #333; font-size: 0.9em; margin-bottom: 4px; }
+        .suggestion-meta { color: #999; font-size: 0.75em; }
+        .suggestion-votes { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+        .vote-btn { background: none; border: 1px solid #ddd; border-radius: 6px; padding: 4px 10px; cursor: pointer; font-size: 0.85em; transition: all 0.2s; }
+        .vote-btn:hover { background: #e8f5e9; border-color: #2d6b4f; }
+        .vote-btn.voted { background: #2d6b4f; color: white; border-color: #2d6b4f; }
+        .vote-count { font-weight: 700; color: #2d6b4f; font-size: 0.95em; }
+        .suggestion-accepted { background: #e8f5e9; border-color: #2d6b4f; }
+        .suggestion-accepted .suggestion-text::before { content: '✅ '; }
+        .accept-btn { background: none; border: 1px solid #f57c00; color: #f57c00; border-radius: 6px; padding: 3px 8px; font-size: 0.72em; cursor: pointer; margin-top: 4px; }
+        .accept-btn:hover { background: #fff3e0; }
         @media (max-width: 600px) { header h1 { font-size: 2em; } main { padding: 24px 16px; } table { font-size: 0.82em; } .post-date { margin-left: 0; } }
     </style>
 </head>
@@ -72,19 +94,25 @@
         <!-- ITINERARY -->
         <h2>Itinerary Overview</h2>
 
-        <div class="schedule-card">
+        <div class="schedule-card" data-agenda-id="jul18-arrival">
             <span class="day">Friday, July 18</span><span class="date"> — Arrival</span><span class="who">Sapna + Samip</span>
             <p>Arrive Quito late. Check into Hampton by Hilton La Carolina. Rest + hydrate (altitude: 2,850m).</p>
+            <button class="suggest-toggle" onclick="toggleSuggest('jul18-arrival')">+ Suggest Alternative</button>
+            <div class="suggest-form" id="suggest-form-jul18-arrival"></div>
+            <div class="suggestions-list" id="suggestions-jul18-arrival"></div>
         </div>
 
-        <div class="schedule-card">
+        <div class="schedule-card" data-agenda-id="jul19-explore">
             <span class="day">Saturday, July 19</span><span class="date"> — Quito Explore</span><span class="who">Sapna + Samip</span>
             <p><strong>Morning:</strong> TeleferiQo cable car up Pichincha (4,100m views) or Old Town walking tour.</p>
             <p><strong>Afternoon:</strong> La Floresta neighborhood — cafes, galleries, street art.</p>
             <p><strong>Evening:</strong> Dinner at Tandana or Zazu.</p>
+            <button class="suggest-toggle" onclick="toggleSuggest('jul19-explore')">+ Suggest Alternative</button>
+            <div class="suggest-form" id="suggest-form-jul19-explore"></div>
+            <div class="suggestions-list" id="suggestions-jul19-explore"></div>
         </div>
 
-        <div class="schedule-card">
+        <div class="schedule-card" data-agenda-id="jul20-worldcup">
             <span class="day">Sunday, July 20</span><span class="date"> — World Cup Final + Arrivals</span><span class="who">Sapna + Samip (day) / Shrey + Nevan arrive late</span>
             <div class="highlight">
                 <strong><span class="emoji">&#9917;</span> World Cup Final</strong> — Kickoff ~2-3 PM Ecuador time<br>
@@ -92,15 +120,21 @@
             </div>
             <p><strong>Morning:</strong> Otavalo Market day trip OR Mitad del Mundo (Equator line).</p>
             <p><strong>Evening:</strong> Shrey + Nevan arrive. Regroup at hotel.</p>
+            <button class="suggest-toggle" onclick="toggleSuggest('jul20-worldcup')">+ Suggest Alternative</button>
+            <div class="suggest-form" id="suggest-form-jul20-worldcup"></div>
+            <div class="suggestions-list" id="suggestions-jul20-worldcup"></div>
         </div>
 
-        <div class="schedule-card">
+        <div class="schedule-card" data-agenda-id="jul21-quito">
             <span class="day">Monday, July 21</span><span class="date"> — Quito Day (All 4)</span><span class="who">Everyone</span>
             <p><strong>Options:</strong> Old Town tour, TeleferiQo (if not done), La Ronda street, food tour, Guapulo neighborhood walk.</p>
             <p><strong>Evening:</strong> Dinner at Nuema or Chez Jerome. Pack for Cotopaxi.</p>
+            <button class="suggest-toggle" onclick="toggleSuggest('jul21-quito')">+ Suggest Alternative</button>
+            <div class="suggest-form" id="suggest-form-jul21-quito"></div>
+            <div class="suggestions-list" id="suggestions-jul21-quito"></div>
         </div>
 
-        <div class="schedule-card">
+        <div class="schedule-card" data-agenda-id="jul22-cotopaxi">
             <span class="day">Tuesday, July 22</span><span class="date"> — Cotopaxi Overnight</span><span class="who">Everyone</span>
             <p><strong>8 AM:</strong> Depart Quito (private transfer or lodge pickup).</p>
             <p><strong>10 AM:</strong> Arrive lodge. Orientation + welcome drink.</p>
@@ -109,20 +143,29 @@
             <p><strong>2:30 PM:</strong> Afternoon adventure — hike to refuge (4,864m) OR mountain biking OR horseback riding.</p>
             <p><strong>5 PM:</strong> Hot tub with volcano sunset views.</p>
             <p><strong>7:30 PM:</strong> Dinner. Stargazing after (incredible at altitude with no light pollution).</p>
+            <button class="suggest-toggle" onclick="toggleSuggest('jul22-cotopaxi')">+ Suggest Alternative</button>
+            <div class="suggest-form" id="suggest-form-jul22-cotopaxi"></div>
+            <div class="suggestions-list" id="suggestions-jul22-cotopaxi"></div>
         </div>
 
-        <div class="schedule-card">
+        <div class="schedule-card" data-agenda-id="jul23-return">
             <span class="day">Wednesday, July 23</span><span class="date"> — Return to Quito</span><span class="who">Everyone</span>
             <p><strong>5:45 AM:</strong> Optional sunrise (snow cap turns pink/gold).</p>
             <p><strong>7:30 AM:</strong> Breakfast.</p>
             <p><strong>8:30 AM:</strong> Short morning activity (hike or horseback).</p>
             <p><strong>10:30 AM:</strong> Depart for Quito. Arrive ~12:30 PM.</p>
             <p><strong>Afternoon:</strong> Rest, pack for Galapagos. Celebration dinner.</p>
+            <button class="suggest-toggle" onclick="toggleSuggest('jul23-return')">+ Suggest Alternative</button>
+            <div class="suggest-form" id="suggest-form-jul23-return"></div>
+            <div class="suggestions-list" id="suggestions-jul23-return"></div>
         </div>
 
-        <div class="schedule-card">
+        <div class="schedule-card" data-agenda-id="jul24-galapagos">
             <span class="day">Thursday, July 24 — Tuesday, July 29</span><span class="date"> — Galapagos (5 days)</span><span class="who">Everyone</span>
             <p>Flight to Galapagos. Pre-planned itinerary.</p>
+            <button class="suggest-toggle" onclick="toggleSuggest('jul24-galapagos')">+ Suggest Alternative</button>
+            <div class="suggest-form" id="suggest-form-jul24-galapagos"></div>
+            <div class="suggestions-list" id="suggestions-jul24-galapagos"></div>
         </div>
 
         <!-- COTOPAXI LODGES -->
@@ -424,6 +467,95 @@
             input.value = '';
             document.getElementById('reply-form-' + id).style.display = 'none';
         }
+
+        // ============ AGENDA SUGGESTIONS ============
+        const suggestionsRef = db.ref('parikh-ecuador/suggestions');
+
+        function toggleSuggest(agendaId) {
+            const form = document.getElementById('suggest-form-' + agendaId);
+            if (form.classList.contains('open')) {
+                form.classList.remove('open');
+                return;
+            }
+            form.classList.add('open');
+            const name = localStorage.getItem('parikh_ecuador_name') || '';
+            form.innerHTML = `
+                <input type="text" placeholder="Your name" value="${name}" id="suggest-name-${agendaId}">
+                <textarea placeholder="What would you suggest instead? (activity, restaurant, timing, etc.)" id="suggest-text-${agendaId}"></textarea>
+                <button class="suggest-submit" onclick="submitSuggestion('${agendaId}')">Submit Suggestion</button>
+            `;
+            form.querySelector('textarea').focus();
+        }
+
+        function submitSuggestion(agendaId) {
+            const name = document.getElementById('suggest-name-' + agendaId).value.trim();
+            const text = document.getElementById('suggest-text-' + agendaId).value.trim();
+            if (!name || !text) { alert('Please enter your name and suggestion'); return; }
+
+            suggestionsRef.child(agendaId).push({
+                name, text,
+                timestamp: Date.now(),
+                votes: {},
+                accepted: false
+            });
+
+            localStorage.setItem('parikh_ecuador_name', name);
+            document.getElementById('suggest-form-' + agendaId).classList.remove('open');
+        }
+
+        function voteSuggestion(agendaId, suggestionId) {
+            const name = localStorage.getItem('parikh_ecuador_name') || 'Anonymous';
+            const voteRef = suggestionsRef.child(agendaId + '/' + suggestionId + '/votes/' + name.replace(/[.#$/[\]]/g, '_'));
+            voteRef.once('value', snap => {
+                if (snap.exists()) {
+                    voteRef.remove();
+                } else {
+                    voteRef.set(true);
+                }
+            });
+        }
+
+        function acceptSuggestion(agendaId, suggestionId) {
+            suggestionsRef.child(agendaId + '/' + suggestionId + '/accepted').set(true);
+        }
+
+        // Listen for all suggestions
+        suggestionsRef.on('value', (snapshot) => {
+            if (!snapshot.exists()) return;
+            const allSuggestions = snapshot.val();
+
+            for (const [agendaId, items] of Object.entries(allSuggestions)) {
+                const container = document.getElementById('suggestions-' + agendaId);
+                if (!container) continue;
+
+                const sorted = Object.entries(items)
+                    .map(([id, s]) => ({ id, ...s, voteCount: s.votes ? Object.keys(s.votes).length : 0 }))
+                    .sort((a, b) => b.voteCount - a.voteCount);
+
+                if (sorted.length === 0) { container.innerHTML = ''; continue; }
+
+                const myName = (localStorage.getItem('parikh_ecuador_name') || '').replace(/[.#$/[\]]/g, '_');
+
+                container.innerHTML = `<h4 style="color:#666;font-size:0.82em;margin-bottom:6px;">Suggestions (${sorted.length})</h4>` +
+                    sorted.map(s => {
+                        const voted = s.votes && s.votes[myName];
+                        const date = new Date(s.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                        return `
+                            <div class="suggestion-item ${s.accepted ? 'suggestion-accepted' : ''}">
+                                <div class="suggestion-content">
+                                    <div class="suggestion-text">${s.text}</div>
+                                    <div class="suggestion-meta">by ${s.name} · ${date}${s.accepted ? ' · <strong style="color:#2d6b4f;">ACCEPTED</strong>' : ''}</div>
+                                    <button class="accept-btn" onclick="acceptSuggestion('${agendaId}','${s.id}')">Accept this plan</button>
+                                </div>
+                                <div class="suggestion-votes">
+                                    <button class="vote-btn ${voted ? 'voted' : ''}" onclick="voteSuggestion('${agendaId}','${s.id}')">👍</button>
+                                    <span class="vote-count">${s.voteCount}</span>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+            }
+        });
     </script>
 </body>
 </html>
