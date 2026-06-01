@@ -34,7 +34,32 @@
         .compare-table td:first-child { font-weight: 600; white-space: nowrap; }
         .food-tag { display: inline-block; background: #e8f5e9; color: #2e7d32; padding: 3px 10px; border-radius: 12px; font-size: 0.82em; margin: 2px 4px 2px 0; }
         footer { text-align: center; padding: 40px 24px; color: #999; font-size: 0.85em; border-top: 1px solid #eee; margin-top: 60px; }
-        @media (max-width: 600px) { header h1 { font-size: 2em; } main { padding: 24px 16px; } table { font-size: 0.82em; } }
+        .discussion-section { margin-top: 16px; }
+        .post-form { background: white; border: 1px solid #e8e8e8; border-radius: 12px; padding: 20px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px; }
+        .post-form input, .post-form select, .post-form textarea { padding: 10px 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.95em; font-family: inherit; }
+        .post-form textarea { resize: vertical; }
+        .post-form select { max-width: 200px; }
+        .post-btn { background: #2d6b4f; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: 600; cursor: pointer; align-self: flex-start; transition: background 0.2s; }
+        .post-btn:hover { background: #1a5a3f; }
+        .posts-list { display: flex; flex-direction: column; gap: 14px; }
+        .empty-posts { color: #999; font-style: italic; text-align: center; padding: 30px; }
+        .post-card { background: white; border: 1px solid #e8e8e8; border-radius: 12px; padding: 18px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
+        .post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+        .post-type-badge { padding: 3px 10px; border-radius: 12px; font-size: 0.78em; font-weight: 600; text-transform: capitalize; }
+        .post-author { font-weight: 700; color: #1a3a4a; }
+        .post-date { color: #999; font-size: 0.8em; margin-left: auto; }
+        .post-body { color: #333; line-height: 1.6; margin-bottom: 12px; }
+        .post-actions { display: flex; gap: 10px; }
+        .like-btn, .reply-btn { background: #f5f5f5; border: 1px solid #e0e0e0; padding: 5px 12px; border-radius: 16px; font-size: 0.82em; cursor: pointer; transition: all 0.2s; }
+        .like-btn:hover { background: #e8f5e9; border-color: #2d6b4f; }
+        .reply-btn:hover { background: #e3f2fd; border-color: #1565c0; }
+        .replies { margin-top: 10px; padding-left: 16px; border-left: 2px solid #e8e8e8; }
+        .reply { padding: 6px 0; font-size: 0.88em; color: #555; }
+        .reply strong { color: #1a3a4a; }
+        .reply-form { display: flex; gap: 8px; margin-top: 10px; }
+        .reply-form input { flex: 1; padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.9em; }
+        .reply-submit { background: #2d6b4f; color: white; border: none; padding: 8px 14px; border-radius: 8px; font-size: 0.85em; cursor: pointer; }
+        @media (max-width: 600px) { header h1 { font-size: 2em; } main { padding: 24px 16px; } table { font-size: 0.82em; } .post-date { margin-left: 0; } }
     </style>
 </head>
 <body>
@@ -267,10 +292,138 @@
             <li>Hiking shoes/boots for Cotopaxi</li>
             <li>Swimsuit (hot tub at lodge)</li>
         </ul>
+        <!-- DISCUSSION -->
+        <h2>Family Discussion Board</h2>
+        <p style="color:#666; margin-bottom:16px;">Post questions, suggestions, or vote on ideas. Everyone can see and respond in real-time.</p>
+
+        <div class="discussion-section">
+            <div class="post-form">
+                <input type="text" id="post-name" placeholder="Your name" maxlength="20">
+                <select id="post-type">
+                    <option value="question">Question</option>
+                    <option value="suggestion">Suggestion</option>
+                    <option value="vote">Vote/Poll</option>
+                    <option value="note">Note</option>
+                </select>
+                <textarea id="post-message" placeholder="What's on your mind about the trip?" rows="3"></textarea>
+                <button class="post-btn" id="btn-post">Post</button>
+            </div>
+            <div class="posts-list" id="posts-list">
+                <p class="empty-posts">No posts yet — be the first to share your thoughts!</p>
+            </div>
+        </div>
     </main>
 
     <footer>
         Parikh Family Ecuador Trip | July 2026
     </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script>
+        firebase.initializeApp({
+            apiKey: "AIzaSyAa7-2TnMXUlaiQwuO3nsNlgj38Ejdp6WU",
+            authDomain: "flip7-35782.firebaseapp.com",
+            databaseURL: "https://flip7-35782-default-rtdb.firebaseio.com",
+            projectId: "flip7-35782",
+            storageBucket: "flip7-35782.firebasestorage.app",
+            messagingSenderId: "424240528171",
+            appId: "1:424240528171:web:08e11beb043c8ca0c0236e"
+        });
+
+        const db = firebase.database();
+        const postsRef = db.ref('parikh-ecuador/posts');
+
+        document.getElementById('btn-post').addEventListener('click', submitPost);
+        document.getElementById('post-message').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submitPost(); }
+        });
+
+        function submitPost() {
+            const name = document.getElementById('post-name').value.trim();
+            const type = document.getElementById('post-type').value;
+            const message = document.getElementById('post-message').value.trim();
+            if (!name || !message) { alert('Please enter your name and message'); return; }
+
+            postsRef.push({
+                name, type, message,
+                timestamp: Date.now(),
+                likes: 0,
+                replies: {}
+            });
+
+            document.getElementById('post-message').value = '';
+            localStorage.setItem('parikh_ecuador_name', name);
+        }
+
+        // Restore saved name
+        const savedName = localStorage.getItem('parikh_ecuador_name');
+        if (savedName) document.getElementById('post-name').value = savedName;
+
+        // Listen for posts
+        postsRef.orderByChild('timestamp').on('value', (snapshot) => {
+            const container = document.getElementById('posts-list');
+            if (!snapshot.exists()) {
+                container.innerHTML = '<p class="empty-posts">No posts yet — be the first to share your thoughts!</p>';
+                return;
+            }
+
+            const posts = [];
+            snapshot.forEach(child => posts.push({ id: child.key, ...child.val() }));
+            posts.reverse();
+
+            container.innerHTML = posts.map(post => {
+                const date = new Date(post.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+                const typeIcons = { question: '❓', suggestion: '💡', vote: '🗳️', note: '📝' };
+                const typeColors = { question: '#e3f2fd', suggestion: '#e8f5e9', vote: '#fff3e0', note: '#f3e5f5' };
+                const replies = post.replies ? Object.values(post.replies) : [];
+
+                return `
+                    <div class="post-card">
+                        <div class="post-header">
+                            <span class="post-type-badge" style="background:${typeColors[post.type]}">${typeIcons[post.type]} ${post.type}</span>
+                            <span class="post-author">${post.name}</span>
+                            <span class="post-date">${date}</span>
+                        </div>
+                        <div class="post-body">${post.message.replace(/\n/g, '<br>')}</div>
+                        <div class="post-actions">
+                            <button class="like-btn" onclick="likePost('${post.id}')">👍 ${post.likes || 0}</button>
+                            <button class="reply-btn" onclick="toggleReply('${post.id}')">💬 Reply (${replies.length})</button>
+                        </div>
+                        <div class="replies" id="replies-${post.id}">
+                            ${replies.map(r => `<div class="reply"><strong>${r.name}:</strong> ${r.message}</div>`).join('')}
+                        </div>
+                        <div class="reply-form" id="reply-form-${post.id}" style="display:none;">
+                            <input type="text" placeholder="Your reply..." id="reply-input-${post.id}" onkeydown="if(event.key==='Enter')submitReply('${post.id}')">
+                            <button class="reply-submit" onclick="submitReply('${post.id}')">Send</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        });
+
+        function likePost(id) {
+            postsRef.child(id + '/likes').transaction(current => (current || 0) + 1);
+        }
+
+        function toggleReply(id) {
+            const form = document.getElementById('reply-form-' + id);
+            form.style.display = form.style.display === 'none' ? 'flex' : 'none';
+            if (form.style.display === 'flex') {
+                form.querySelector('input').focus();
+            }
+        }
+
+        function submitReply(id) {
+            const input = document.getElementById('reply-input-' + id);
+            const message = input.value.trim();
+            const name = document.getElementById('post-name').value.trim() || 'Anonymous';
+            if (!message) return;
+
+            postsRef.child(id + '/replies').push({ name, message, timestamp: Date.now() });
+            input.value = '';
+            document.getElementById('reply-form-' + id).style.display = 'none';
+        }
+    </script>
 </body>
 </html>
