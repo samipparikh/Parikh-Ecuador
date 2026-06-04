@@ -81,7 +81,42 @@
         .suggestion-accepted .suggestion-text::before { content: '✅ '; }
         .accept-btn { background: none; border: 1px solid #f57c00; color: #f57c00; border-radius: 6px; padding: 3px 8px; font-size: 0.72em; cursor: pointer; margin-top: 4px; }
         .accept-btn:hover { background: #fff3e0; }
-        @media (max-width: 600px) { header h1 { font-size: 2em; } main { padding: 24px 16px; } table { font-size: 0.82em; } .post-date { margin-left: 0; } }
+        /* Activity voting cards */
+        .activity-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 16px; }
+        .activity-card { background: white; border: 1px solid #e8e8e8; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); position: relative; overflow: hidden; }
+        .activity-card.full-day { border-left: 4px solid #2d6b4f; }
+        .activity-card.half-day { border-left: 4px solid #1565c0; }
+        .activity-card.lodge { border-left: 4px solid #f57c00; }
+        .activity-card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+        .activity-card-header h4 { margin: 0; color: #1a3a4a; font-size: 1.1em; flex: 1; }
+        .activity-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+        .meta-tag { display: inline-flex; align-items: center; gap: 4px; background: #f5f5f5; padding: 3px 10px; border-radius: 12px; font-size: 0.78em; color: #555; }
+        .meta-tag.price { background: #e8f5e9; color: #2e7d32; font-weight: 600; }
+        .meta-tag.duration { background: #e3f2fd; color: #1565c0; }
+        .meta-tag.group { background: #fff3e0; color: #e65100; }
+        .meta-tag.difficulty { background: #f3e5f5; color: #7b1fa2; }
+        .activity-desc { color: #555; font-size: 0.9em; line-height: 1.5; margin-bottom: 14px; }
+        .activity-vote-section { display: flex; align-items: center; gap: 12px; padding-top: 12px; border-top: 1px solid #f0f0f0; }
+        .activity-vote-btn { display: flex; align-items: center; gap: 6px; background: #f5f5f5; border: 1px solid #e0e0e0; padding: 8px 16px; border-radius: 20px; cursor: pointer; transition: all 0.2s; font-size: 0.9em; }
+        .activity-vote-btn:hover { background: #e8f5e9; border-color: #2d6b4f; }
+        .activity-vote-btn.voted { background: #2d6b4f; color: white; border-color: #2d6b4f; }
+        .activity-vote-count { font-weight: 700; color: #2d6b4f; }
+        .activity-voters { font-size: 0.78em; color: #888; flex: 1; }
+        .activity-feedback-btn { background: none; border: 1px dashed #ccc; padding: 5px 12px; border-radius: 8px; font-size: 0.8em; cursor: pointer; color: #888; }
+        .activity-feedback-btn:hover { border-color: #2d6b4f; color: #2d6b4f; }
+        .activity-feedback-section { display: none; margin-top: 12px; padding-top: 12px; border-top: 1px solid #f0f0f0; }
+        .activity-feedback-section.open { display: block; }
+        .activity-feedback-input { display: flex; gap: 8px; margin-bottom: 10px; }
+        .activity-feedback-input input { flex: 1; padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.88em; }
+        .activity-feedback-input button { background: #2d6b4f; color: white; border: none; padding: 8px 14px; border-radius: 8px; font-size: 0.85em; cursor: pointer; white-space: nowrap; }
+        .activity-comments { display: flex; flex-direction: column; gap: 6px; }
+        .activity-comment { font-size: 0.85em; color: #555; padding: 6px 0; }
+        .activity-comment strong { color: #1a3a4a; }
+        .activity-note { background: #fffde7; border: 1px solid #fff176; border-radius: 8px; padding: 10px 14px; font-size: 0.85em; color: #666; margin-bottom: 16px; }
+        .activity-category-header { display: flex; align-items: center; gap: 10px; margin: 32px 0 8px; }
+        .activity-category-header h3 { margin: 0; }
+        .category-badge { font-size: 0.75em; background: #e0e0e0; padding: 3px 10px; border-radius: 10px; color: #555; }
+        @media (max-width: 600px) { header h1 { font-size: 2em; } main { padding: 24px 16px; } table { font-size: 0.82em; } .post-date { margin-left: 0; } .activity-card-header { flex-direction: column; } }
     </style>
 </head>
 <body>
@@ -279,6 +314,457 @@
             <tr><td>Logistics</td><td>Zero — everything handled</td><td>Some coordination needed</td></tr>
             <tr><td>Best for</td><td>Luxury, no planning stress</td><td>Great experience at half the price</td></tr>
         </table>
+
+        <!-- COTOPAXI ACTIVITIES -->
+        <h2>Cotopaxi Activities — Vote on What We Do!</h2>
+        <div class="activity-note">
+            These are the activities offered by <strong>Chilcabamba Lodge</strong> for our Tue Jul 21 overnight stay. Vote for the ones you're most interested in and leave feedback! All activities must be confirmed 24 hours in advance. Prices are per group (1-4 people) unless noted otherwise.
+        </div>
+
+        <div class="activity-category-header">
+            <h3>Discover Cotopaxi National Park</h3>
+            <span class="category-badge">6 km from lodge</span>
+        </div>
+
+        <div class="activity-grid" id="activities-park">
+            <div class="activity-card full-day" data-activity-id="cotopaxi-full-day">
+                <div class="activity-card-header">
+                    <h4>1. Full Day Cotopaxi National Park</h4>
+                </div>
+                <div class="activity-meta">
+                    <span class="meta-tag price">$117 (Spanish) / $160 (English)</span>
+                    <span class="meta-tag duration">7 hours</span>
+                    <span class="meta-tag group">1-4 people</span>
+                    <span class="meta-tag difficulty">Moderate-Hard</span>
+                </div>
+                <div class="activity-desc">
+                    Hike to the Jose Ribas Refuge at 4,800m — possibly touch the glacier at 5,000m! Includes Limpiopungo Lagoon panoramic views and Pucara del Salitre ruins. Starts 8am. Includes transportation + guide. Boxed lunch not included.
+                </div>
+                <div class="activity-vote-section">
+                    <button class="activity-vote-btn" onclick="voteActivity('cotopaxi-full-day')">👍 <span class="activity-vote-count" id="vote-count-cotopaxi-full-day">0</span></button>
+                    <span class="activity-voters" id="voters-cotopaxi-full-day"></span>
+                    <button class="activity-feedback-btn" onclick="toggleActivityFeedback('cotopaxi-full-day')">💬 Feedback</button>
+                </div>
+                <div class="activity-feedback-section" id="feedback-section-cotopaxi-full-day">
+                    <div class="activity-feedback-input">
+                        <input type="text" placeholder="Add a comment..." id="feedback-input-cotopaxi-full-day" onkeydown="if(event.key==='Enter')submitActivityFeedback('cotopaxi-full-day')">
+                        <button onclick="submitActivityFeedback('cotopaxi-full-day')">Send</button>
+                    </div>
+                    <div class="activity-comments" id="comments-cotopaxi-full-day"></div>
+                </div>
+            </div>
+
+            <div class="activity-card half-day" data-activity-id="horseback-park">
+                <div class="activity-card-header">
+                    <h4>2. Horseback Riding in Cotopaxi National Park</h4>
+                </div>
+                <div class="activity-meta">
+                    <span class="meta-tag price">$21/hr, $26/2hr, $38/3hr per person</span>
+                    <span class="meta-tag duration">1-3 hours</span>
+                    <span class="meta-tag group">Per person (+$17 single rider)</span>
+                    <span class="meta-tag difficulty">Easy</span>
+                </div>
+                <div class="activity-desc">
+                    Ride through the eastern foothills with views of Cotopaxi, Sincholagua, and Ruminahui volcanoes. Led by an authentic local 'chagra' guide. Includes helmet and poncho. Transfer to corral: $25. Ages 6+, prior experience recommended.
+                </div>
+                <div class="activity-vote-section">
+                    <button class="activity-vote-btn" onclick="voteActivity('horseback-park')">👍 <span class="activity-vote-count" id="vote-count-horseback-park">0</span></button>
+                    <span class="activity-voters" id="voters-horseback-park"></span>
+                    <button class="activity-feedback-btn" onclick="toggleActivityFeedback('horseback-park')">💬 Feedback</button>
+                </div>
+                <div class="activity-feedback-section" id="feedback-section-horseback-park">
+                    <div class="activity-feedback-input">
+                        <input type="text" placeholder="Add a comment..." id="feedback-input-horseback-park" onkeydown="if(event.key==='Enter')submitActivityFeedback('horseback-park')">
+                        <button onclick="submitActivityFeedback('horseback-park')">Send</button>
+                    </div>
+                    <div class="activity-comments" id="comments-horseback-park"></div>
+                </div>
+            </div>
+
+            <div class="activity-card full-day" data-activity-id="ruminahui-hike">
+                <div class="activity-card-header">
+                    <h4>3. Hiking to Ruminahui Volcano</h4>
+                </div>
+                <div class="activity-meta">
+                    <span class="meta-tag price">$117 (Spanish) / $160 (English)</span>
+                    <span class="meta-tag duration">7 hours</span>
+                    <span class="meta-tag group">1-4 people</span>
+                    <span class="meta-tag difficulty">Hard</span>
+                </div>
+                <div class="activity-desc">
+                    Summit the central peak of Ruminahui (4,630m) — a dormant volcano inside Cotopaxi National Park. Starts at Limpiopungo Lagoon, ascends through grasslands and sandy terrain to rocky summit. Panoramic views of Cotopaxi, Sincholagua, Corazon, and Pasochoa. Helmets required for final stretch ($5pp). Starts 8am. Bring boxed lunch.
+                </div>
+                <div class="activity-vote-section">
+                    <button class="activity-vote-btn" onclick="voteActivity('ruminahui-hike')">👍 <span class="activity-vote-count" id="vote-count-ruminahui-hike">0</span></button>
+                    <span class="activity-voters" id="voters-ruminahui-hike"></span>
+                    <button class="activity-feedback-btn" onclick="toggleActivityFeedback('ruminahui-hike')">💬 Feedback</button>
+                </div>
+                <div class="activity-feedback-section" id="feedback-section-ruminahui-hike">
+                    <div class="activity-feedback-input">
+                        <input type="text" placeholder="Add a comment..." id="feedback-input-ruminahui-hike" onkeydown="if(event.key==='Enter')submitActivityFeedback('ruminahui-hike')">
+                        <button onclick="submitActivityFeedback('ruminahui-hike')">Send</button>
+                    </div>
+                    <div class="activity-comments" id="comments-ruminahui-hike"></div>
+                </div>
+            </div>
+
+            <div class="activity-card full-day" data-activity-id="mountain-biking">
+                <div class="activity-card-header">
+                    <h4>4. Mountain Biking — Epic Descent</h4>
+                </div>
+                <div class="activity-meta">
+                    <span class="meta-tag price">$125 (shared) / $180 (private 1-4) / $115 (private 5+)</span>
+                    <span class="meta-tag duration">5 hours</span>
+                    <span class="meta-tag group">1-4 people</span>
+                    <span class="meta-tag difficulty">Moderate-Hard</span>
+                </div>
+                <div class="activity-desc">
+                    Descent from 4,500m through volcanic terrain, tundra, and past wild horses to Limpiopungo Lagoon. 32 km total (mix of dirt and paved roads). Includes Trek X Caliber bike, helmet, gloves, protections, water, tea, and box lunch. Starts 8:30am. Must confirm 48 hours in advance.
+                </div>
+                <div class="activity-vote-section">
+                    <button class="activity-vote-btn" onclick="voteActivity('mountain-biking')">👍 <span class="activity-vote-count" id="vote-count-mountain-biking">0</span></button>
+                    <span class="activity-voters" id="voters-mountain-biking"></span>
+                    <button class="activity-feedback-btn" onclick="toggleActivityFeedback('mountain-biking')">💬 Feedback</button>
+                </div>
+                <div class="activity-feedback-section" id="feedback-section-mountain-biking">
+                    <div class="activity-feedback-input">
+                        <input type="text" placeholder="Add a comment..." id="feedback-input-mountain-biking" onkeydown="if(event.key==='Enter')submitActivityFeedback('mountain-biking')">
+                        <button onclick="submitActivityFeedback('mountain-biking')">Send</button>
+                    </div>
+                    <div class="activity-comments" id="comments-mountain-biking"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="activity-category-header">
+            <h3>Explore the Lodge Surroundings</h3>
+            <span class="category-badge">Near the lodge</span>
+        </div>
+
+        <div class="activity-grid" id="activities-surroundings">
+            <div class="activity-card half-day" data-activity-id="cascada-fuego">
+                <div class="activity-card-header">
+                    <h4>5. Hike to "Cascada de Fuego" Waterfall</h4>
+                </div>
+                <div class="activity-meta">
+                    <span class="meta-tag price">$21 (Spanish guide)</span>
+                    <span class="meta-tag duration">2-3 hours</span>
+                    <span class="meta-tag group">1-8 people</span>
+                    <span class="meta-tag difficulty">Easy</span>
+                </div>
+                <div class="activity-desc">
+                    Walk along trails through petrified lava to reach a stunning 60-meter waterfall. Can be done self-guided or with a Spanish guide. 25-min drive to trailhead (or 1-hour walk from lodge). Transfer available $25 for up to 4 people. Best in morning for weather.
+                </div>
+                <div class="activity-vote-section">
+                    <button class="activity-vote-btn" onclick="voteActivity('cascada-fuego')">👍 <span class="activity-vote-count" id="vote-count-cascada-fuego">0</span></button>
+                    <span class="activity-voters" id="voters-cascada-fuego"></span>
+                    <button class="activity-feedback-btn" onclick="toggleActivityFeedback('cascada-fuego')">💬 Feedback</button>
+                </div>
+                <div class="activity-feedback-section" id="feedback-section-cascada-fuego">
+                    <div class="activity-feedback-input">
+                        <input type="text" placeholder="Add a comment..." id="feedback-input-cascada-fuego" onkeydown="if(event.key==='Enter')submitActivityFeedback('cascada-fuego')">
+                        <button onclick="submitActivityFeedback('cascada-fuego')">Send</button>
+                    </div>
+                    <div class="activity-comments" id="comments-cascada-fuego"></div>
+                </div>
+            </div>
+
+            <div class="activity-card full-day" data-activity-id="pita-canyon">
+                <div class="activity-card-header">
+                    <h4>6. Hike Along the Pita River Canyon</h4>
+                </div>
+                <div class="activity-meta">
+                    <span class="meta-tag price">$57 (Spanish guide)</span>
+                    <span class="meta-tag duration">6 hours</span>
+                    <span class="meta-tag group">1-8 people</span>
+                    <span class="meta-tag difficulty">Moderate</span>
+                </div>
+                <div class="activity-desc">
+                    Full circuit on foot through the canyon carved by waters from Cotopaxi and Sincholagua. See traces of ancient lava flows, waterfalls, diverse birdlife, local plants, and community farmlands. Includes guide and guide's meal. Bring a boxed lunch. Starts 8am. Transportation not included.
+                </div>
+                <div class="activity-vote-section">
+                    <button class="activity-vote-btn" onclick="voteActivity('pita-canyon')">👍 <span class="activity-vote-count" id="vote-count-pita-canyon">0</span></button>
+                    <span class="activity-voters" id="voters-pita-canyon"></span>
+                    <button class="activity-feedback-btn" onclick="toggleActivityFeedback('pita-canyon')">💬 Feedback</button>
+                </div>
+                <div class="activity-feedback-section" id="feedback-section-pita-canyon">
+                    <div class="activity-feedback-input">
+                        <input type="text" placeholder="Add a comment..." id="feedback-input-pita-canyon" onkeydown="if(event.key==='Enter')submitActivityFeedback('pita-canyon')">
+                        <button onclick="submitActivityFeedback('pita-canyon')">Send</button>
+                    </div>
+                    <div class="activity-comments" id="comments-pita-canyon"></div>
+                </div>
+            </div>
+
+            <div class="activity-card full-day" data-activity-id="waterfalls-full-day">
+                <div class="activity-card-header">
+                    <h4>7. Full Day of Waterfalls</h4>
+                </div>
+                <div class="activity-meta">
+                    <span class="meta-tag price">$117 (Spanish guide)</span>
+                    <span class="meta-tag duration">6 hours</span>
+                    <span class="meta-tag group">1-4 people</span>
+                    <span class="meta-tag difficulty">Moderate</span>
+                </div>
+                <div class="activity-desc">
+                    Discover up to 5 waterfalls on hidden trails and natural reserves. Depart by SUV from lodge reception with a local guide. Includes transportation and guide. Bring a boxed lunch (can be arranged with lodge staff). Starts 8am.
+                </div>
+                <div class="activity-vote-section">
+                    <button class="activity-vote-btn" onclick="voteActivity('waterfalls-full-day')">👍 <span class="activity-vote-count" id="vote-count-waterfalls-full-day">0</span></button>
+                    <span class="activity-voters" id="voters-waterfalls-full-day"></span>
+                    <button class="activity-feedback-btn" onclick="toggleActivityFeedback('waterfalls-full-day')">💬 Feedback</button>
+                </div>
+                <div class="activity-feedback-section" id="feedback-section-waterfalls-full-day">
+                    <div class="activity-feedback-input">
+                        <input type="text" placeholder="Add a comment..." id="feedback-input-waterfalls-full-day" onkeydown="if(event.key==='Enter')submitActivityFeedback('waterfalls-full-day')">
+                        <button onclick="submitActivityFeedback('waterfalls-full-day')">Send</button>
+                    </div>
+                    <div class="activity-comments" id="comments-waterfalls-full-day"></div>
+                </div>
+            </div>
+
+            <div class="activity-card half-day" data-activity-id="horseback-pedregal">
+                <div class="activity-card-header">
+                    <h4>8. Horseback Riding in El Pedregal</h4>
+                </div>
+                <div class="activity-meta">
+                    <span class="meta-tag price">$21/hr, $26/2hr, $38/3hr per person</span>
+                    <span class="meta-tag duration">1-3 hours</span>
+                    <span class="meta-tag group">Per person (+$17 single rider)</span>
+                    <span class="meta-tag difficulty">Easy</span>
+                </div>
+                <div class="activity-desc">
+                    Scenic horseback ride through the lodge surroundings, discovering the daily life of the local community. Horses arrive at the lodge — no transfer needed. Flexible schedule. Includes helmet. Ages 6+, prior experience recommended.
+                </div>
+                <div class="activity-vote-section">
+                    <button class="activity-vote-btn" onclick="voteActivity('horseback-pedregal')">👍 <span class="activity-vote-count" id="vote-count-horseback-pedregal">0</span></button>
+                    <span class="activity-voters" id="voters-horseback-pedregal"></span>
+                    <button class="activity-feedback-btn" onclick="toggleActivityFeedback('horseback-pedregal')">💬 Feedback</button>
+                </div>
+                <div class="activity-feedback-section" id="feedback-section-horseback-pedregal">
+                    <div class="activity-feedback-input">
+                        <input type="text" placeholder="Add a comment..." id="feedback-input-horseback-pedregal" onkeydown="if(event.key==='Enter')submitActivityFeedback('horseback-pedregal')">
+                        <button onclick="submitActivityFeedback('horseback-pedregal')">Send</button>
+                    </div>
+                    <div class="activity-comments" id="comments-horseback-pedregal"></div>
+                </div>
+            </div>
+
+            <div class="activity-card half-day" data-activity-id="trout-fishing">
+                <div class="activity-card-header">
+                    <h4>9. Trout Fishing</h4>
+                </div>
+                <div class="activity-meta">
+                    <span class="meta-tag price">$9 per kg (minimum price)</span>
+                    <span class="meta-tag duration">2 hours</span>
+                    <span class="meta-tag group">Family-friendly</span>
+                    <span class="meta-tag difficulty">Easy</span>
+                </div>
+                <div class="activity-desc">
+                    20-minute walk from lodge to a neighbor's trout pond. Includes craft fishing rod and bait. Catch is weighed, cleaned, and can be cooked at the lodge for lunch. Flexible schedule. Transportation and cooking not included in base price.
+                </div>
+                <div class="activity-vote-section">
+                    <button class="activity-vote-btn" onclick="voteActivity('trout-fishing')">👍 <span class="activity-vote-count" id="vote-count-trout-fishing">0</span></button>
+                    <span class="activity-voters" id="voters-trout-fishing"></span>
+                    <button class="activity-feedback-btn" onclick="toggleActivityFeedback('trout-fishing')">💬 Feedback</button>
+                </div>
+                <div class="activity-feedback-section" id="feedback-section-trout-fishing">
+                    <div class="activity-feedback-input">
+                        <input type="text" placeholder="Add a comment..." id="feedback-input-trout-fishing" onkeydown="if(event.key==='Enter')submitActivityFeedback('trout-fishing')">
+                        <button onclick="submitActivityFeedback('trout-fishing')">Send</button>
+                    </div>
+                    <div class="activity-comments" id="comments-trout-fishing"></div>
+                </div>
+            </div>
+
+            <div class="activity-card half-day" data-activity-id="cow-milking">
+                <div class="activity-card-header">
+                    <h4>10. Cow Milking — Rural Life Experience</h4>
+                </div>
+                <div class="activity-meta">
+                    <span class="meta-tag price">$21 (Spanish guide)</span>
+                    <span class="meta-tag duration">1-2 hours</span>
+                    <span class="meta-tag group">1-8 people</span>
+                    <span class="meta-tag difficulty">Easy</span>
+                </div>
+                <div class="activity-desc">
+                    Visit the local community of Loreto del Pedregal to learn traditional hand-milking. 20-30 min walk or 10-min drive to pasture. Starts 1:45 PM. Must book 24 hours in advance.
+                </div>
+                <div class="activity-vote-section">
+                    <button class="activity-vote-btn" onclick="voteActivity('cow-milking')">👍 <span class="activity-vote-count" id="vote-count-cow-milking">0</span></button>
+                    <span class="activity-voters" id="voters-cow-milking"></span>
+                    <button class="activity-feedback-btn" onclick="toggleActivityFeedback('cow-milking')">💬 Feedback</button>
+                </div>
+                <div class="activity-feedback-section" id="feedback-section-cow-milking">
+                    <div class="activity-feedback-input">
+                        <input type="text" placeholder="Add a comment..." id="feedback-input-cow-milking" onkeydown="if(event.key==='Enter')submitActivityFeedback('cow-milking')">
+                        <button onclick="submitActivityFeedback('cow-milking')">Send</button>
+                    </div>
+                    <div class="activity-comments" id="comments-cow-milking"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="activity-category-header">
+            <h3>Visit Nearby Attractions</h3>
+            <span class="category-badge">Day trips</span>
+        </div>
+
+        <div class="activity-grid" id="activities-nearby">
+            <div class="activity-card full-day" data-activity-id="saquisili-market">
+                <div class="activity-card-header">
+                    <h4>11. Indigenous Market of Saquisili</h4>
+                </div>
+                <div class="activity-meta">
+                    <span class="meta-tag price">$123 (Spanish) / $165 (English)</span>
+                    <span class="meta-tag duration">7 hours total</span>
+                    <span class="meta-tag group">1-4 people</span>
+                    <span class="meta-tag difficulty">Easy</span>
+                </div>
+                <div class="activity-desc">
+                    One of Ecuador's largest and most authentic indigenous markets — kitchen utensils, flowers, goats, ponchos, local crafts. 1.5-hour transfer each way. Starts 7:30am. <strong>THURSDAY ONLY — not available on our Tue Jul 21 stay.</strong>
+                </div>
+                <div class="activity-vote-section">
+                    <button class="activity-vote-btn" onclick="voteActivity('saquisili-market')">👍 <span class="activity-vote-count" id="vote-count-saquisili-market">0</span></button>
+                    <span class="activity-voters" id="voters-saquisili-market"></span>
+                    <button class="activity-feedback-btn" onclick="toggleActivityFeedback('saquisili-market')">💬 Feedback</button>
+                </div>
+                <div class="activity-feedback-section" id="feedback-section-saquisili-market">
+                    <div class="activity-feedback-input">
+                        <input type="text" placeholder="Add a comment..." id="feedback-input-saquisili-market" onkeydown="if(event.key==='Enter')submitActivityFeedback('saquisili-market')">
+                        <button onclick="submitActivityFeedback('saquisili-market')">Send</button>
+                    </div>
+                    <div class="activity-comments" id="comments-saquisili-market"></div>
+                </div>
+            </div>
+
+            <div class="activity-card full-day" data-activity-id="quilotoa-crater">
+                <div class="activity-card-header">
+                    <h4>12. Excursion to Quilotoa Crater</h4>
+                </div>
+                <div class="activity-meta">
+                    <span class="meta-tag price">$148 (Spanish) / $205 (English)</span>
+                    <span class="meta-tag duration">9 hours total</span>
+                    <span class="meta-tag group">1-4 people</span>
+                    <span class="meta-tag difficulty">Moderate</span>
+                </div>
+                <div class="activity-desc">
+                    3-hour scenic drive through Andean communities to the stunning turquoise crater lake. Descend 2 km on foot to the lake, then ascend back. Browse craft shops and local restaurants. Starts 7:30am. Includes transportation and guide.
+                </div>
+                <div class="activity-vote-section">
+                    <button class="activity-vote-btn" onclick="voteActivity('quilotoa-crater')">👍 <span class="activity-vote-count" id="vote-count-quilotoa-crater">0</span></button>
+                    <span class="activity-voters" id="voters-quilotoa-crater"></span>
+                    <button class="activity-feedback-btn" onclick="toggleActivityFeedback('quilotoa-crater')">💬 Feedback</button>
+                </div>
+                <div class="activity-feedback-section" id="feedback-section-quilotoa-crater">
+                    <div class="activity-feedback-input">
+                        <input type="text" placeholder="Add a comment..." id="feedback-input-quilotoa-crater" onkeydown="if(event.key==='Enter')submitActivityFeedback('quilotoa-crater')">
+                        <button onclick="submitActivityFeedback('quilotoa-crater')">Send</button>
+                    </div>
+                    <div class="activity-comments" id="comments-quilotoa-crater"></div>
+                </div>
+            </div>
+
+            <div class="activity-card full-day" data-activity-id="antisana-park">
+                <div class="activity-card-header">
+                    <h4>13. Full Day Antisana National Park — Andean Condor</h4>
+                </div>
+                <div class="activity-meta">
+                    <span class="meta-tag price">$148 (Spanish) / $205 (English)</span>
+                    <span class="meta-tag duration">7 hours total</span>
+                    <span class="meta-tag group">1-4 people</span>
+                    <span class="meta-tag difficulty">Moderate</span>
+                </div>
+                <div class="activity-desc">
+                    Visit Ecuador's 4th-highest volcano and the main refuge for the Andean condor. 2-hour drive, then spot condors, hummingbirds, and other birds around lagoons. Trek trails and enjoy La Mica Lagoon. Starts 8am. Includes transport and guide.
+                </div>
+                <div class="activity-vote-section">
+                    <button class="activity-vote-btn" onclick="voteActivity('antisana-park')">👍 <span class="activity-vote-count" id="vote-count-antisana-park">0</span></button>
+                    <span class="activity-voters" id="voters-antisana-park"></span>
+                    <button class="activity-feedback-btn" onclick="toggleActivityFeedback('antisana-park')">💬 Feedback</button>
+                </div>
+                <div class="activity-feedback-section" id="feedback-section-antisana-park">
+                    <div class="activity-feedback-input">
+                        <input type="text" placeholder="Add a comment..." id="feedback-input-antisana-park" onkeydown="if(event.key==='Enter')submitActivityFeedback('antisana-park')">
+                        <button onclick="submitActivityFeedback('antisana-park')">Send</button>
+                    </div>
+                    <div class="activity-comments" id="comments-antisana-park"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="activity-category-header">
+            <h3>Enjoy the Lodge</h3>
+            <span class="category-badge">On-site</span>
+        </div>
+
+        <div class="activity-grid" id="activities-lodge">
+            <div class="activity-card lodge" data-activity-id="cooking-class">
+                <div class="activity-card-header">
+                    <h4>14. Cooking Classes — Local Recipes</h4>
+                </div>
+                <div class="activity-meta">
+                    <span class="meta-tag price">$12 per person</span>
+                    <span class="meta-tag duration">1 hour</span>
+                    <span class="meta-tag group">Per person</span>
+                    <span class="meta-tag difficulty">Easy</span>
+                </div>
+                <div class="activity-desc">
+                    Prepare traditional Ecuadorian mid-afternoon snacks with the lodge kitchen team. Learn local recipes to take home. Includes welcome drink. Available Mon-Fri at 4pm (not holidays). Must book 24 hours in advance. Our stay is Tuesday so this works!
+                </div>
+                <div class="activity-vote-section">
+                    <button class="activity-vote-btn" onclick="voteActivity('cooking-class')">👍 <span class="activity-vote-count" id="vote-count-cooking-class">0</span></button>
+                    <span class="activity-voters" id="voters-cooking-class"></span>
+                    <button class="activity-feedback-btn" onclick="toggleActivityFeedback('cooking-class')">💬 Feedback</button>
+                </div>
+                <div class="activity-feedback-section" id="feedback-section-cooking-class">
+                    <div class="activity-feedback-input">
+                        <input type="text" placeholder="Add a comment..." id="feedback-input-cooking-class" onkeydown="if(event.key==='Enter')submitActivityFeedback('cooking-class')">
+                        <button onclick="submitActivityFeedback('cooking-class')">Send</button>
+                    </div>
+                    <div class="activity-comments" id="comments-cooking-class"></div>
+                </div>
+            </div>
+
+            <div class="activity-card lodge" data-activity-id="bonfire-smores">
+                <div class="activity-card-header">
+                    <h4>15. Bonfire with S'mores + Happy Hour</h4>
+                </div>
+                <div class="activity-meta">
+                    <span class="meta-tag price">$4 per person (s'mores)</span>
+                    <span class="meta-tag duration">Evening</span>
+                    <span class="meta-tag group">Per person</span>
+                    <span class="meta-tag difficulty">Easy</span>
+                </div>
+                <div class="activity-desc">
+                    Campfire with volcano sunset views, roast marshmallows, make s'mores. Happy Hour 5-7pm features artisanal Ecuadorian spirits: Andean vodka distilled on Cotopaxi slopes, aromatic gin, single malt whiskey from Pasochoa spring waters, and 9-year aged rum. Weather permitting. Just give 15 min notice!
+                </div>
+                <div class="activity-vote-section">
+                    <button class="activity-vote-btn" onclick="voteActivity('bonfire-smores')">👍 <span class="activity-vote-count" id="vote-count-bonfire-smores">0</span></button>
+                    <span class="activity-voters" id="voters-bonfire-smores"></span>
+                    <button class="activity-feedback-btn" onclick="toggleActivityFeedback('bonfire-smores')">💬 Feedback</button>
+                </div>
+                <div class="activity-feedback-section" id="feedback-section-bonfire-smores">
+                    <div class="activity-feedback-input">
+                        <input type="text" placeholder="Add a comment..." id="feedback-input-bonfire-smores" onkeydown="if(event.key==='Enter')submitActivityFeedback('bonfire-smores')">
+                        <button onclick="submitActivityFeedback('bonfire-smores')">Send</button>
+                    </div>
+                    <div class="activity-comments" id="comments-bonfire-smores"></div>
+                </div>
+            </div>
+        </div>
+
+        <h3>Transfer Services (Lodge Rates)</h3>
+        <table>
+            <tr><th>Destination</th><th>Price (per way, 1-4 people)</th></tr>
+            <tr><td>Machachi</td><td>$25</td></tr>
+            <tr><td>Quito center</td><td>$60</td></tr>
+            <tr><td>From airport UIO</td><td>$70</td></tr>
+            <tr><td>To airport UIO</td><td>$65</td></tr>
+            <tr><td>Papallacta (via Sangolqui)</td><td>$85</td></tr>
+            <tr><td>Banos</td><td>$95</td></tr>
+        </table>
+        <div class="tip"><strong>Note:</strong> Pay cash to driver. Airport transfers have +$10 surcharge between 10pm-5am.</div>
 
         <!-- QUITO HOTEL -->
         <h2>Quito Hotel</h2>
@@ -585,6 +1071,85 @@
         function acceptSuggestion(agendaId, suggestionId) {
             suggestionsRef.child(agendaId + '/' + suggestionId + '/accepted').set(true);
         }
+
+        // ============ ACTIVITY VOTING ============
+        const activitiesRef = db.ref('parikh-ecuador/activities');
+
+        function voteActivity(activityId) {
+            const name = localStorage.getItem('parikh_ecuador_name') || document.getElementById('post-name').value.trim();
+            if (!name) { alert('Please enter your name at the top of the Discussion Board first'); return; }
+            localStorage.setItem('parikh_ecuador_name', name);
+            const safeKey = name.replace(/[.#$/[\]]/g, '_');
+            const voteRef = activitiesRef.child(activityId + '/votes/' + safeKey);
+            voteRef.once('value', snap => {
+                if (snap.exists()) {
+                    voteRef.remove();
+                } else {
+                    voteRef.set(name);
+                }
+            });
+        }
+
+        function toggleActivityFeedback(activityId) {
+            const section = document.getElementById('feedback-section-' + activityId);
+            section.classList.toggle('open');
+            if (section.classList.contains('open')) {
+                section.querySelector('input').focus();
+            }
+        }
+
+        function submitActivityFeedback(activityId) {
+            const input = document.getElementById('feedback-input-' + activityId);
+            const message = input.value.trim();
+            const name = localStorage.getItem('parikh_ecuador_name') || document.getElementById('post-name').value.trim();
+            if (!name) { alert('Please enter your name at the top of the Discussion Board first'); return; }
+            if (!message) return;
+            localStorage.setItem('parikh_ecuador_name', name);
+
+            activitiesRef.child(activityId + '/comments').push({
+                name, message, timestamp: Date.now()
+            });
+            input.value = '';
+        }
+
+        // Listen for activity votes and comments
+        activitiesRef.on('value', (snapshot) => {
+            if (!snapshot.exists()) return;
+            const data = snapshot.val();
+
+            for (const [activityId, activity] of Object.entries(data)) {
+                const countEl = document.getElementById('vote-count-' + activityId);
+                const votersEl = document.getElementById('voters-' + activityId);
+                const commentsEl = document.getElementById('comments-' + activityId);
+                if (!countEl) continue;
+
+                // Votes
+                const votes = activity.votes ? Object.entries(activity.votes) : [];
+                const voteCount = votes.length;
+                countEl.textContent = voteCount;
+
+                const myName = (localStorage.getItem('parikh_ecuador_name') || '').replace(/[.#$/[\]]/g, '_');
+                const btn = countEl.closest('.activity-vote-btn');
+                if (activity.votes && activity.votes[myName]) {
+                    btn.classList.add('voted');
+                } else {
+                    btn.classList.remove('voted');
+                }
+
+                if (votersEl) {
+                    const voterNames = votes.map(([k, v]) => v);
+                    votersEl.textContent = voterNames.length > 0 ? voterNames.join(', ') : '';
+                }
+
+                // Comments
+                if (commentsEl) {
+                    const comments = activity.comments ? Object.values(activity.comments).sort((a, b) => a.timestamp - b.timestamp) : [];
+                    commentsEl.innerHTML = comments.map(c =>
+                        `<div class="activity-comment"><strong>${c.name}:</strong> ${c.message}</div>`
+                    ).join('');
+                }
+            }
+        });
 
         // Listen for all suggestions
         suggestionsRef.on('value', (snapshot) => {
